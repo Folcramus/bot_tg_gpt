@@ -10,8 +10,10 @@ from aiogram.filters import CommandStart, CommandObject, Command
 from gpt import Messaging
 from openai import OpenAI
 import gpt
+import re
+from aiogram.enums import ParseMode
 load_dotenv(find_dotenv())
-bot = Bot(os.getenv("TOKEN"))
+bot = Bot(os.getenv("TOKEN"), parse_mode='Markdown')
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
 
