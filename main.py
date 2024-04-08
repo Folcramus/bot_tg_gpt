@@ -7,40 +7,52 @@ from aiogram import F
 import json
 from dotenv import load_dotenv, find_dotenv
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.filters import CommandStart, CommandObject, Command
+from aiogram.filters import CommandStart,  Command
 from gpt import messaging, command_gpt
-from openai import OpenAI
-import gpt
-import re
-from aiogram.enums import ParseMode
 
+"""Конфиги """
 load_dotenv(find_dotenv())
 bot = Bot(os.getenv("TOKEN"), parse_mode='Markdown')
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
 
 
+"""Стартовое сообщение """
 @dp.message(CommandStart())
 async def start_command(message: types.Message):
     res = messaging("Привет")
-    await message.answer(res)
+    bissness = message.business_connection_id
+    chat_id = message.chat.id
+    await bot.send_message(chat_id=chat_id, text=res, business_connection_id=bissness)
+
+"""Отправка бизнес сообщений """
+@dp.business_message(F.text)
+async def business_mess(message: types.Message):
+    if message.from_user.id != os.getenv("ID"):
+        res = messaging(message.text)
+        business = message.business_connection_id
+        chat_id = message.chat.id
+        await bot.send_message(chat_id=chat_id, text=res, business_connection_id=business)
 
 
-@dp.message(F.text, Command("botGPT"))
+"""Отправка обычных сообщений (структурирование сообщений) """
+@dp.message(F.text, Command("gpt"))
 async def command_sender(message: types.Message):
     res = command_gpt(message.text)
 
     await message.answer(res)
 
-
+"""Отправка обычных сообщений (не для бизнес аккаунта) """
 @dp.message()
 async def Sender(message: types.Message):
     res = messaging(message.text)
 
-    await message.answer(res)
+    business = message.business_connection_id
+    chat_id = message.chat.id
+    await bot.send_message(chat_id=chat_id, text=res, business_connection_id=business)
 
 
-
+"""Запуск бота """
 @dp.message()
 async def main() -> None:
     await dp.start_polling(bot)

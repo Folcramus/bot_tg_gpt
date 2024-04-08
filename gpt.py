@@ -1,11 +1,7 @@
 import httpx
 import time
-import sys
-import logging
-import asyncio
 import os
 from openai import OpenAI
-import openai
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
@@ -38,7 +34,7 @@ def check_status(run_id, thread_id):
 
     return run.status
 
-
+"""Обработка обычных сообщений"""
 def messaging(mess: str) -> str:
     my_run_id, my_thread_id = create_thread(assistant_id, mess)
     status = check_status(my_run_id, my_thread_id)
@@ -51,7 +47,7 @@ def messaging(mess: str) -> str:
     if response.data:
         return response.data[0].content[0].text.value
 
-
+"""Обработка структурированных сообщений"""
 def command_gpt(content: str) -> str:
     mess  = "Структурируй содержание  данного  сообщения по красоте: " + content
     chat_completion = client.chat.completions.create(
