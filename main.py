@@ -29,27 +29,21 @@ async def start_command(message: types.Message):
 @dp.business_message(F.text)
 async def business_mess(message: types.Message):
     if message.from_user.id != os.getenv("ID"):
-        res = messaging(message.text)
+        res = messaging("Структурируй содержание  данного  сообщения по красоте: " + message.text )
         business = message.business_connection_id
         chat_id = message.chat.id
         await bot.send_message(chat_id=chat_id, text=res, business_connection_id=business)
 
 
 """Отправка обычных сообщений (структурирование сообщений) """
-@dp.message(F.text, Command("gpt"))
+@dp.message(F.text)
 async def command_sender(message: types.Message):
-    res = command_gpt(message.text)
+    res = messaging("Структурируй содержание  данного  сообщения по красоте: " + message.text )
 
     await message.answer(res)
 
 """Отправка обычных сообщений (не для бизнес аккаунта) """
-@dp.message()
-async def Sender(message: types.Message):
-    res = messaging(message.text)
 
-    business = message.business_connection_id
-    chat_id = message.chat.id
-    await bot.send_message(chat_id=chat_id, text=res, business_connection_id=business)
 
 
 """Запуск бота """
