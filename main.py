@@ -21,10 +21,11 @@ dp = Dispatcher(storage=storage)
 
 @dp.message(CommandStart())
 async def start_command(message: types.Message):
-    res = messaging("Привет")
+    res = messaging("Привет", message.from_user.id)
     bissness = message.business_connection_id
     chat_id = message.chat.id
     await bot.send_message(chat_id=chat_id, text=res, business_connection_id=bissness)
+
 
 @dp.business_message(CommandStart())
 async def start_command(message: types.Message):
@@ -32,16 +33,19 @@ async def start_command(message: types.Message):
     bissness = message.business_connection_id
     chat_id = message.chat.id
     await bot.send_message(chat_id=chat_id, text=res, business_connection_id=bissness)
+
+
 """Отправка бизнес сообщений """
 
 
 @dp.business_message(Command("gpt"))
 async def business_mess(message: types.Message):
     if message.from_user.id != os.getenv("ID"):
-        res = messaging("Структурируй содержание  данного  сообщения по красоте: " + message.text,  message.from_user.id)
+        res = messaging("Структурируй содержание  данного  сообщения по красоте: " + message.text, message.from_user.id)
         business = message.business_connection_id
         chat_id = message.chat.id
         await bot.send_message(chat_id=chat_id, text=res, business_connection_id=business)
+
 
 @dp.business_message(F.text)
 async def business_mess(message: types.Message):
@@ -50,12 +54,14 @@ async def business_mess(message: types.Message):
         bissness = message.business_connection_id
         chat_id = message.chat.id
         await bot.send_message(chat_id=chat_id, text=res, business_connection_id=bissness)
+
+
 """Отправка обычных сообщений (структурирование сообщений) """
 
 
 @dp.message(F.text)
 async def command_sender(message: types.Message):
-    res = messaging("Структурируй содержание  данного  сообщения по красоте: " + message.text, message.from_user.id)
+    res = messaging( message.text, message.from_user.id)
 
     await message.answer(res)
 
