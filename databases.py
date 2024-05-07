@@ -1,7 +1,6 @@
 import sqlalchemy as db
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Session
-from sqlalchemy_serializer import SerializerMixin
 engine = db.create_engine('sqlite:///Base.db')
 
 conn = engine.connect()
@@ -11,7 +10,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class Thread(Base, SerializerMixin):
+class Thread(Base):
     __tablename__ = "Threads"
 
     id = Column(Integer, primary_key=True, index=True)
